@@ -59,11 +59,13 @@ const STAGES = [
 
 const SUGGESTED_ROLES = [
   "Technical Product Manager",
-  "AI Engineer",
-  "Solutions Architect",
-  "Founding Engineer",
-  "Engineering Manager",
+  "AI Research Scientist",
+  "McDonald's Shift Lead / Crew Trainer",
+  "Licensed Plumber / Electrician",
+  "Registered Nurse (RN)",
+  "Studio Guitarist & Audio Engineer",
   "Data Platform Lead",
+  "Operations Manager",
 ];
 
 const INTAKE_CONSTRAINTS = [
@@ -81,7 +83,7 @@ export default function AnalyzePage() {
 
   const [file, setFile] = useState<File | null>(null);
   const [targetRole, setTargetRole] = useState("Technical Product Manager");
-  const [targetIndustry, setTargetIndustry] = useState("B2B SaaS / Developer Tools");
+  const [targetIndustry, setTargetIndustry] = useState("");
   const [targetCompany, setTargetCompany] = useState("");
   const [additionalContext, setAdditionalContext] = useState("");
   const [selectedConstraints, setSelectedConstraints] = useState<string[]>([]);
@@ -277,7 +279,7 @@ export default function AnalyzePage() {
                 required
                 value={targetRole}
                 onChange={(e) => setTargetRole(e.target.value)}
-                placeholder="e.g. Technical Product Manager, AI Engineer, Solutions Architect"
+                placeholder="e.g. AI Researcher, McDonald's Shift Lead, Plumber, Nurse, Product Manager"
                 className="w-full rounded-2xl border border-white/10 bg-[#090607]/80 px-4 py-3 text-sm text-white placeholder:text-[#757080] focus:border-[#ac1ed6] focus:outline-none focus:ring-1 focus:ring-[#ac1ed6] transition-all"
               />
 
@@ -300,13 +302,13 @@ export default function AnalyzePage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <label className="text-xs font-bold uppercase tracking-wider text-[#d5d0dd]">
-                  Target Industry
+                  Target Industry <span className="text-[#757080] font-normal lowercase">(optional - auto-detected)</span>
                 </label>
                 <input
                   type="text"
                   value={targetIndustry}
                   onChange={(e) => setTargetIndustry(e.target.value)}
-                  placeholder="e.g. B2B SaaS, FinTech, HealthTech"
+                  placeholder="e.g. Hospitality, Trades, Healthcare, AI, Music (auto-classified if blank)"
                   className="w-full rounded-2xl border border-white/10 bg-[#090607]/80 px-4 py-3 text-sm text-white placeholder:text-[#757080] focus:border-[#ac1ed6] focus:outline-none focus:ring-1 focus:ring-[#ac1ed6] transition-all"
                 />
               </div>

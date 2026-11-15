@@ -58,7 +58,7 @@ export async function POST(req: NextRequest) {
       resumeFileName: resumeFile.name,
       resumeText: parseResult.text,
       targetRole,
-      targetIndustry: targetIndustry || "Technology",
+      targetIndustry: targetIndustry || "",
       targetCompany,
       additionalContext,
     });

@@ -63,7 +63,7 @@ export default function ResultsPage({
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<TabKey>("snapshot");
+  const [activeTab, setActiveTab] = useState<TabKey>("trajectories");
   const [activeConstraint, setActiveConstraint] = useState<ConstraintFilterId>("all");
 
 
@@ -181,9 +181,9 @@ export default function ResultsPage({
     sources,
   } = canonical;
 
-  const tabs: { key: TabKey; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
+  const tabs: { key: TabKey; label: string; icon: React.ComponentType<{ className?: string }>; starred?: boolean }[] = [
+    { key: "trajectories", label: "⭐ Trajectory Intelligence", icon: TrendingUp, starred: true },
     { key: "snapshot", label: "Career Map & Snapshot", icon: Sparkles },
-    { key: "trajectories", label: "Trajectory Intelligence", icon: TrendingUp },
     { key: "gaps", label: "Where Your Route Differs", icon: Target },
     { key: "pathway", label: "Action Pathway (90-Day)", icon: BookOpen },
     { key: "market", label: "Market Intelligence", icon: Layers },
@@ -289,12 +289,21 @@ export default function ResultsPage({
                   onClick={() => setActiveTab(tab.key)}
                   className={`flex items-center gap-2 rounded-full px-4 py-2 text-xs font-bold transition-all shrink-0 ${
                     isActive
-                      ? "bg-gradient-to-r from-[#ac1ed6] to-[#c26e73] text-white shadow-md shadow-[#ac1ed6]/25"
+                      ? tab.starred
+                        ? "bg-gradient-to-r from-amber-500 via-[#ac1ed6] to-[#c26e73] text-white shadow-lg shadow-amber-500/20 ring-1 ring-amber-400/40"
+                        : "bg-gradient-to-r from-[#ac1ed6] to-[#c26e73] text-white shadow-md shadow-[#ac1ed6]/25"
+                      : tab.starred
+                      ? "bg-amber-500/10 text-amber-300 hover:bg-amber-500/20 border border-amber-500/30"
                       : "bg-white/[0.04] text-[#9a93a5] hover:bg-white/[0.08] hover:text-white border border-white/[0.06]"
                   }`}
                 >
                   <Icon className="h-3.5 w-3.5" />
                   <span>{tab.label}</span>
+                  {tab.starred && !isActive && (
+                    <span className="rounded-full bg-amber-400/20 text-amber-300 text-[9px] font-black px-1.5 py-0.5 border border-amber-400/30">
+                      ★ STAR
+                    </span>
+                  )}
                 </button>
               );
             })}
@@ -326,7 +335,7 @@ export default function ResultsPage({
                   </div>
                 </div>
                 <span className="rounded-full bg-white/[0.05] border border-white/[0.08] px-3 py-1 text-xs font-mono text-[#d5d0dd]">
-                  Closest Route: {trajectories.closestRoute.routeName.split(":")[1] || "Technical → Product"}
+                  Closest Route: {trajectories.closestRoute.routeName.split(":")[1] || trajectories.closestRoute.routeName || "Direct Progression Route"}
                 </span>
               </div>
 
@@ -341,7 +350,7 @@ export default function ResultsPage({
                     {candidate.strengths[0]?.name || "Foundational Execution"}
                   </h4>
                   <p className="text-xs text-[#9a93a5] leading-relaxed">
-                    Verified competence in {candidate.strengths.map((s) => s.name).join(", ")}.
+                    Verified competence in {candidate.strengths.map((s) => s.name).join(", ") || "core execution"}.
                   </p>
                 </div>
 
@@ -351,10 +360,10 @@ export default function ResultsPage({
                     <CircleDot className="h-2.5 w-2.5 text-[#ac1ed6]" /> Next Milestone
                   </span>
                   <h4 className="font-bold text-sm text-white">
-                    {priorities[0]?.title || "Product Exposure & Scope Expansion"}
+                    {priorities[0]?.title || "Core Station & Workflow Mastery"}
                   </h4>
                   <p className="text-xs text-[#9a93a5] leading-relaxed">
-                    {priorities[0]?.action || "Author product requirements and define event telemetry."}
+                    {priorities[0]?.action || "Master core workflows and required tooling."}
                   </p>
                 </div>
 
@@ -364,10 +373,10 @@ export default function ResultsPage({
                     Bridge 02
                   </span>
                   <h4 className="font-bold text-sm text-white">
-                    Measurable Decision Ownership
+                    {trajectories.stages[2]?.stageName || "Autonomous Delivery"}
                   </h4>
                   <p className="text-xs text-[#9a93a5] leading-relaxed">
-                    Published case studies proving trade-off rationale and feature outcomes.
+                    {trajectories.stages[2]?.description || "Demonstrated execution and domain ownership."}
                   </p>
                 </div>
 
@@ -380,7 +389,7 @@ export default function ResultsPage({
                     {destination.role}
                   </h4>
                   <p className="text-xs text-[#9a93a5] leading-relaxed">
-                    {destination.industry || "Technology"} • {destination.company || "Target Benchmark"}
+                    {destination.domainLabel || destination.industry || "General Industry"} • {destination.company || "Standard Benchmark"}
                   </p>
                 </div>
               </div>
@@ -437,14 +446,14 @@ export default function ResultsPage({
                     <Sparkles className="h-4 w-4 text-[#ac1ed6]" />
                   </div>
                   <h4 className="text-base font-extrabold text-white leading-snug">
-                    {priorities[0]?.action || "Build one end-to-end product case study with user prioritization and metrics."}
+                    {priorities[0]?.action || `Execute foundational milestone and assemble demonstration artifact for ${destination.role}.`}
                   </h4>
                   <div className="rounded-2xl bg-[#090607]/80 p-3 border border-white/[0.06] space-y-1 text-xs">
                     <span className="text-[10px] font-mono uppercase text-emerald-400 font-bold">
                       Proof you will create:
                     </span>
                     <p className="text-[11px] text-[#d5d0dd]">
-                      {priorities[0]?.proof || "A published Notion PRD case study with prioritized user stories."}
+                      {priorities[0]?.proof || "A concrete portfolio deliverable, work sample, or completion certificate."}
                     </p>
                   </div>
                 </div>
@@ -571,6 +580,43 @@ export default function ResultsPage({
         {/* ========================================================================= */}
         {activeTab === "trajectories" && (
           <div className="space-y-10">
+            {/* ⭐ Star Landing Hero Banner */}
+            <div className="rounded-3xl border border-amber-500/40 bg-gradient-to-r from-amber-500/15 via-[#121016] to-[#ac1ed6]/20 p-6 sm:p-7 shadow-2xl relative overflow-hidden">
+              <div className="absolute top-0 right-0 translate-x-4 -translate-y-4 w-48 h-48 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative z-10">
+                <div className="flex items-start sm:items-center gap-4">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-tr from-amber-400 to-[#ac1ed6] text-white shadow-lg shadow-amber-500/30 text-xl font-bold">
+                    ⭐
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="rounded-full bg-amber-400/25 border border-amber-400/40 px-2.5 py-0.5 text-[10px] font-mono font-black uppercase tracking-wider text-amber-300 flex items-center gap-1">
+                        ★ PRIMARY STARRED LANDING
+                      </span>
+                      <span className="rounded-full bg-white/[0.08] px-2.5 py-0.5 text-[10px] text-[#d5d0dd]">
+                        Azure AI Foundry Agent Mining
+                      </span>
+                    </div>
+                    <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+                      Evidence-Backed Trajectory Intelligence for {destination.role}
+                    </h2>
+                    <p className="text-xs sm:text-sm text-[#d5d0dd] max-w-2xl leading-relaxed">
+                      Mined live from authentic professional journeys. Real-world practitioners who made this transition, their definitive transition catalysts, and your closest emulation route.
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <button
+                    onClick={() => handleAskWhy("Explain how these professional career transitions relate to my specific profile", "Trajectory Intelligence Precedents")}
+                    className="rounded-full bg-white/[0.08] hover:bg-white/[0.15] border border-white/10 text-xs text-white font-bold px-4 py-2 transition-all flex items-center gap-1.5 shadow-sm"
+                  >
+                    <Sparkles className="h-3.5 w-3.5 text-amber-400" />
+                    <span>Ask Why These Fit Me</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
             {/* Header / Intro */}
             <div className="space-y-2">
               <span className="text-[10px] font-bold uppercase tracking-widest text-[#ac1ed6]">
@@ -588,79 +634,90 @@ export default function ResultsPage({
             <div className="space-y-4">
               <h3 className="text-xs font-bold uppercase tracking-widest text-[#d5d0dd] flex items-center gap-2">
                 <UserCheck className="h-4 w-4 text-[#ac1ed6]" />
-                People Who Took This Journey ({trajectories.professionals.length} Verified References)
+                {trajectories.professionals.length > 0
+                  ? `People Who Took This Journey (${trajectories.professionals.length} Verified References)`
+                  : `Role Precedents & Verified Career Transition Archetypes`}
               </h3>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {trajectories.professionals.map((person, idx) => (
-                  <div
-                    key={idx}
-                    className="rounded-3xl border border-white/[0.08] bg-[#121016] p-6 space-y-4 flex flex-col justify-between shadow-lg hover:border-[#ac1ed6]/40 transition-all"
-                  >
-                    <div className="space-y-3">
-                      <div>
-                        <h4 className="font-extrabold text-base text-white">{person.name}</h4>
-                        <p className="text-xs text-[#ac1ed6] font-medium">{person.currentRole}</p>
-                      </div>
+              {trajectories.professionals.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {trajectories.professionals.map((person, idx) => (
+                    <div
+                      key={idx}
+                      className="rounded-3xl border border-white/[0.08] bg-[#121016] p-6 space-y-4 flex flex-col justify-between shadow-lg hover:border-[#ac1ed6]/40 transition-all"
+                    >
+                      <div className="space-y-3">
+                        <div>
+                          <h4 className="font-extrabold text-base text-white">{person.name}</h4>
+                          <p className="text-xs text-[#ac1ed6] font-medium">{person.currentRole}</p>
+                        </div>
 
-                      {/* Step-by-Step Career Path */}
-                      <div className="rounded-2xl bg-[#090607]/90 p-3.5 border border-white/[0.06] space-y-1.5 text-xs">
-                        <span className="text-[10px] font-mono font-bold uppercase text-[#757080]">
-                          Career Path:
-                        </span>
-                        <div className="space-y-1">
-                          {person.careerPath.map((step, sIdx) => (
-                            <div key={sIdx} className="flex items-center gap-2 text-[11px] text-[#d5d0dd]">
-                              <span className="text-[#ac1ed6] font-bold">→</span>
-                              <span>{step}</span>
-                            </div>
-                          ))}
+                        {/* Step-by-Step Career Path */}
+                        <div className="rounded-2xl bg-[#090607]/90 p-3.5 border border-white/[0.06] space-y-1.5 text-xs">
+                          <span className="text-[10px] font-mono font-bold uppercase text-[#757080]">
+                            Career Path:
+                          </span>
+                          <div className="space-y-1">
+                            {person.careerPath.map((step, sIdx) => (
+                              <div key={sIdx} className="flex items-center gap-2 text-[11px] text-[#d5d0dd]">
+                                <span className="text-[#ac1ed6] font-bold">→</span>
+                                <span>{step}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* The Interesting Part / Transition */}
+                        <div className="space-y-1 text-xs">
+                          <span className="text-[10px] font-bold uppercase text-[#c26e73]">
+                            The Transition Insight:
+                          </span>
+                          <p className="text-[11px] text-[#9a93a5] leading-relaxed">
+                            {person.relevantTransition}
+                          </p>
+                        </div>
+
+                        {/* What to Learn */}
+                        <div className="space-y-1 text-xs pt-1 border-t border-white/[0.04]">
+                          <span className="text-[10px] font-bold uppercase text-white">
+                            What You Can Learn:
+                          </span>
+                          <ul className="space-y-1 text-[11px] text-[#9a93a5]">
+                            {person.keyLearnings.map((learn, lIdx) => (
+                              <li key={lIdx} className="flex items-start gap-1.5">
+                                <span className="text-emerald-400 font-bold">•</span>
+                                <span>{learn}</span>
+                              </li>
+                            ))}
+                          </ul>
                         </div>
                       </div>
 
-                      {/* The Interesting Part / Transition */}
-                      <div className="space-y-1 text-xs">
-                        <span className="text-[10px] font-bold uppercase text-[#c26e73]">
-                          The Transition Insight:
-                        </span>
-                        <p className="text-[11px] text-[#9a93a5] leading-relaxed">
-                          {person.relevantTransition}
-                        </p>
-                      </div>
-
-                      {/* What to Learn */}
-                      <div className="space-y-1 text-xs pt-1 border-t border-white/[0.04]">
-                        <span className="text-[10px] font-bold uppercase text-white">
-                          What You Can Learn:
-                        </span>
-                        <ul className="space-y-1 text-[11px] text-[#9a93a5]">
-                          {person.keyLearnings.map((learn, lIdx) => (
-                            <li key={lIdx} className="flex items-start gap-1.5">
-                              <span className="text-emerald-400 font-bold">•</span>
-                              <span>{learn}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
+                      {/* Sources */}
+                      {person.sources && person.sources.length > 0 && (
+                        <div className="pt-2 border-t border-white/[0.06] text-[10px] text-[#757080] flex items-center justify-between">
+                          <span>Public Source:</span>
+                          <a
+                            href={person.sources[0]?.url || "#"}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[#ac1ed6] hover:underline flex items-center gap-0.5 truncate max-w-[200px]"
+                          >
+                            {person.sources[0]?.title || "Reference"} <ArrowUpRight className="h-2.5 w-2.5 shrink-0" />
+                          </a>
+                        </div>
+                      )}
                     </div>
-
-                    {/* Sources */}
-                    {person.sources && person.sources.length > 0 && (
-                      <div className="pt-2 border-t border-white/[0.06] text-[10px] text-[#757080] flex items-center justify-between">
-                        <span>Public Source:</span>
-                        <a
-                          href={person.sources[0]?.url || "#"}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-[#ac1ed6] hover:underline flex items-center gap-0.5 truncate max-w-[200px]"
-                        >
-                          {person.sources[0]?.title || "Executive Bio"} <ArrowUpRight className="h-2.5 w-2.5 shrink-0" />
-                        </a>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="rounded-3xl border border-white/[0.08] bg-[#121016] p-6 sm:p-8 text-center space-y-2">
+                  <h4 className="font-bold text-sm text-white">Role Precedent Standards Mined</h4>
+                  <p className="text-xs text-[#9a93a5] max-w-xl mx-auto leading-relaxed">
+                    For {destination.role}, advancement relies on consistent on-the-job mastery, operational speed, and team reliability. Explore the Multi-Route Navigation and Progression Stages below.
+                  </p>
+                </div>
+              )}
             </div>
 
             {/* 2. WHAT THEIR JOURNEYS HAVE IN COMMON (Pattern Frequency Engine) */}

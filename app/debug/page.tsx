@@ -3,7 +3,7 @@ import { CheckCircle2, XCircle, ArrowLeft, RefreshCw, AlertTriangle, Activity, A
 import { Button } from "@/components/ui/button";
 import { isAzureFoundryConfigured, pingAzureFoundry, DEFAULT_AZURE_MODEL, AZURE_FOUNDRY_AGENTS } from "@/lib/ai/azureFoundry";
 import { isSupabaseServerConfigured, pingSupabase } from "@/lib/supabase/server";
-
+import { InteractiveAgentDebugger } from "@/components/debug/InteractiveAgentDebugger";
 
 export const dynamic = "force-dynamic";
 
@@ -122,7 +122,7 @@ export default async function DebugPage() {
   ];
 
   return (
-    <div className="container mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8 space-y-8 text-white">
+    <div className="container mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8 space-y-8 text-white">
       {/* Header */}
       <div className="space-y-3 text-center sm:text-left">
         <div className="flex items-center gap-2">
@@ -135,15 +135,18 @@ export default async function DebugPage() {
         </div>
         <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3.5 py-1 text-xs font-semibold text-[#d5d0dd]">
           <Activity className="h-3.5 w-3.5 text-[#c26e73]" />
-          <span>System Health & Remote Telemetry</span>
+          <span>Multi-Agent System Health & Remote Telemetry</span>
         </div>
         <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">
-          Placey (M.A.C.O.S.) System Diagnostics
+          Placey (M.A.C.O.S.) System & Agent Diagnostics
         </h1>
         <p className="text-xs sm:text-sm text-[#9a93a5] max-w-2xl">
-          Real-time diagnostic monitor testing Next.js, Microsoft Azure AI Foundry, and Supabase connectivity without exposing secret values.
+          Real-time diagnostic monitor testing Next.js, Microsoft Azure AI Foundry cloud models, reciprocal multi-agent debate, and execution traces.
         </p>
       </div>
+
+      {/* Live Interactive Multi-Agent Pipeline Runner */}
+      <InteractiveAgentDebugger />
 
       {/* Main Health Diagnostic Panel */}
       <div className="rounded-3xl border border-white/[0.08] bg-[#121016] p-6 sm:p-8 space-y-6 shadow-2xl">

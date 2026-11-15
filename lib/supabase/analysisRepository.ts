@@ -9,6 +9,9 @@ import {
   PathwayOutput,
   SkillsDiscoveryOutput,
   CanonicalAnalysis,
+  GoalIntent,
+  MACOSState,
+  AgentTraceStep,
 } from "@/types";
 import crypto from "crypto";
 import fs from "fs";
@@ -52,12 +55,15 @@ export interface CreateAnalysisInput {
   target_industry?: string;
   target_company?: string;
   analysis_status: AnalysisStatus;
+  goal_intent?: GoalIntent;
   candidate_profile?: CandidateProfile;
   skills_analysis?: SkillsDiscoveryOutput;
   market_analysis?: MarketIntelligenceOutput;
   trajectory_analysis?: CareerTrajectoryOutput;
   gap_analysis?: GapAnalysisOutput;
   pathway?: PathwayOutput;
+  macos_state?: MACOSState;
+  agent_trace?: AgentTraceStep[];
   canonical_analysis?: CanonicalAnalysis;
   error_message?: string;
 }
@@ -79,6 +85,7 @@ export async function createAnalysisRecord(
     target_role: initial.target_role,
     target_industry: initial.target_industry || "",
     target_company: initial.target_company || "",
+    goal_intent: initial.goal_intent,
     candidate_profile: initial.candidate_profile || ({} as CandidateProfile),
     skills_analysis: initial.skills_analysis || ({} as SkillsDiscoveryOutput),
     market_analysis: initial.market_analysis || ({} as MarketIntelligenceOutput),
@@ -87,6 +94,8 @@ export async function createAnalysisRecord(
     pathway: initial.pathway || ({} as PathwayOutput),
     analysis_status: initial.analysis_status,
     canonical_analysis: initial.canonical_analysis,
+    macos_state: initial.macos_state,
+    agent_trace: initial.agent_trace || [],
     error_message: initial.error_message,
   };
 
